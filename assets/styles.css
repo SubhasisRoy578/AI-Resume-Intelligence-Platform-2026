@@ -1,0 +1,636 @@
+/* =========================================
+GLOBAL BACKGROUND
+========================================= */
+
+.stApp {
+
+    background:
+        radial-gradient(circle at top left, #1e3a8a 0%, transparent 30%),
+        radial-gradient(circle at top right, #7c3aed 0%, transparent 30%),
+        linear-gradient(
+            135deg,
+            #020617,
+            #0f172a,
+            #111827
+        );
+
+    color: white;
+
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* =========================================
+REMOVE STREAMLIT HEADER
+========================================= */
+
+header {
+
+    visibility: hidden;
+}
+
+footer {
+
+    visibility: hidden;
+}
+
+/* =========================================
+MAIN TITLE
+========================================= */
+
+.main-title {
+
+    text-align: center;
+
+    font-size: 68px;
+
+    font-weight: 800;
+
+    margin-top: 20px;
+
+    background: linear-gradient(
+        90deg,
+        #38bdf8,
+        #818cf8,
+        #c084fc
+    );
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+/* =========================================
+NAVBAR
+========================================= */
+
+.navbar {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 25px 20px;
+
+    margin-bottom: 40px;
+}
+
+.nav-logo {
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+    color: white;
+}
+
+.nav-links span {
+
+    margin-left: 35px;
+
+    color: #cbd5e1;
+
+    font-size: 17px;
+
+    transition: 0.3s ease;
+}
+
+.nav-links span:hover {
+
+    color: #60a5fa;
+}
+
+/* =========================================
+HERO SECTION
+========================================= */
+
+.hero-section {
+
+    text-align: center;
+
+    padding: 70px 20px;
+}
+
+.hero-title {
+
+    font-size: 74px;
+
+    font-weight: 900;
+
+    line-height: 1.2;
+
+    color: white;
+}
+
+.gradient-text {
+
+    background: linear-gradient(
+        90deg,
+        #38bdf8,
+        #818cf8,
+        #c084fc
+    );
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+
+    max-width: 950px;
+
+    margin: auto;
+
+    margin-top: 30px;
+
+    font-size: 24px;
+
+    color: #cbd5e1;
+
+    line-height: 1.8;
+}
+
+/* =========================================
+STATS CARDS
+========================================= */
+
+.stats-card {
+
+    background: rgba(255,255,255,0.06);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(14px);
+
+    border-radius: 24px;
+
+    padding: 35px;
+
+    text-align: center;
+
+    transition: 0.3s ease;
+
+    margin-top: 20px;
+}
+
+.stats-card:hover {
+
+    transform: translateY(-10px);
+
+    box-shadow: 0 10px 40px rgba(56,189,248,0.25);
+}
+
+.stats-card h2 {
+
+    font-size: 48px;
+
+    color: #60a5fa;
+
+    margin-bottom: 10px;
+}
+
+.stats-card p {
+
+    color: #cbd5e1;
+
+    font-size: 18px;
+}
+
+/* =========================================
+SECTION TITLE
+========================================= */
+
+.section-title {
+
+    text-align: center;
+
+    font-size: 48px;
+
+    margin-top: 90px;
+
+    margin-bottom: 50px;
+
+    color: white;
+}
+
+/* =========================================
+FEATURE CARDS
+========================================= */
+
+.feature-card {
+
+    background: rgba(255,255,255,0.06);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(14px);
+
+    border-radius: 24px;
+
+    padding: 40px;
+
+    min-height: 270px;
+
+    transition: 0.3s ease;
+}
+
+.feature-card:hover {
+
+    transform: translateY(-12px);
+
+    box-shadow: 0 12px 40px rgba(139,92,246,0.25);
+}
+
+.feature-card h3 {
+
+    font-size: 30px;
+
+    color: white;
+
+    margin-bottom: 25px;
+}
+
+.feature-card p {
+
+    font-size: 18px;
+
+    line-height: 1.8;
+
+    color: #cbd5e1;
+}
+
+/* =========================================
+AUTH CARD
+========================================= */
+
+.auth-card {
+
+    background: rgba(255,255,255,0.07);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(16px);
+
+    border-radius: 28px;
+
+    padding: 45px;
+
+    margin-top: 40px;
+
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+
+/* =========================================
+INPUTS
+========================================= */
+
+.stTextInput input {
+
+    background: rgba(255,255,255,0.08);
+
+    color: white;
+
+    border-radius: 14px;
+
+    border: 1px solid rgba(255,255,255,0.1);
+
+    padding: 14px;
+}
+
+/* =========================================
+BUTTONS
+========================================= */
+
+.stButton button {
+
+    background: linear-gradient(
+        90deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    color: white;
+
+    border: none;
+
+    border-radius: 16px;
+
+    padding: 14px;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    transition: 0.3s ease;
+}
+
+.stButton button:hover {
+
+    transform: scale(1.03);
+
+    background: linear-gradient(
+        90deg,
+        #3b82f6,
+        #8b5cf6
+    );
+
+    box-shadow: 0 10px 30px rgba(139,92,246,0.3);
+}
+
+/* =========================================
+TABS
+========================================= */
+
+.stTabs [data-baseweb="tab"] {
+
+    background: rgba(255,255,255,0.05);
+
+    border-radius: 12px;
+
+    color: white;
+
+    padding: 10px 24px;
+}
+
+.stTabs [aria-selected="true"] {
+
+    background: linear-gradient(
+        90deg,
+        #2563eb,
+        #7c3aed
+    );
+}
+/* =========================================
+HERO GRADIENT
+========================================= */
+
+.hero-gradient {
+
+    font-size: 72px;
+
+    font-weight: 900;
+
+    text-align: center;
+
+    margin-top: -20px;
+
+    background: linear-gradient(
+        90deg,
+        #38bdf8,
+        #818cf8,
+        #c084fc
+    );
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+/* =========================================
+FEATURE ICON
+========================================= */
+
+.feature-icon {
+
+    font-size: 48px;
+
+    margin-bottom: 20px;
+}
+
+/* =========================================
+CTA SECTION
+========================================= */
+
+.cta-section {
+
+    text-align: center;
+
+    margin-top: 80px;
+
+    margin-bottom: 30px;
+
+    padding: 40px;
+
+    background: rgba(255,255,255,0.05);
+
+    border-radius: 28px;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(10px);
+}
+
+.cta-section h2 {
+
+    color: white;
+
+    font-size: 42px;
+
+    margin-bottom: 20px;
+}
+
+.cta-section p {
+
+    color: #cbd5e1;
+
+    font-size: 20px;
+}
+/* =========================================
+AUTH WRAPPER
+========================================= */
+
+.auth-wrapper {
+    text-align: center;
+    padding: 40px 20px 20px;
+}
+
+.auth-main-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.auth-subtitle {
+    font-size: 18px;
+    color: #94a3b8;
+    max-width: 500px;
+    margin: auto;
+}
+
+.auth-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* =========================================
+GLASS CARD
+========================================= */
+
+.glass-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(14px);
+    border-radius: 20px;
+    padding: 24px 28px;
+    margin-bottom: 14px;
+    color: white;
+}
+
+.glass-card h4 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #e2e8f0;
+}
+
+/* =========================================
+DASHBOARD SUBTITLE
+========================================= */
+
+.dashboard-subtitle {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 18px;
+    margin-top: -10px;
+    margin-bottom: 30px;
+}
+
+/* =========================================
+SIDEBAR WELCOME
+========================================= */
+
+.sidebar-welcome {
+    color: #e2e8f0;
+    font-size: 16px;
+    padding: 10px 0 16px;
+}
+
+/* =========================================
+UPLOAD PROMPT
+========================================= */
+
+.upload-prompt {
+    text-align: center;
+    padding: 80px 20px;
+    background: rgba(255,255,255,0.04);
+    border: 2px dashed rgba(255,255,255,0.12);
+    border-radius: 28px;
+    margin-top: 30px;
+}
+
+.upload-prompt .upload-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.upload-prompt h3 {
+    font-size: 26px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.upload-prompt p {
+    color: #94a3b8;
+    font-size: 16px;
+}
+
+/* =========================================
+INTERVIEW CARD
+========================================= */
+
+.interview-card {
+    background: rgba(255,255,255,0.06);
+    border-left: 4px solid #7c3aed;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    color: #e2e8f0;
+    font-size: 16px;
+}
+
+/* =========================================
+ML SCORE CARDS
+========================================= */
+
+.ml-score-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(14px);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.ml-score-label {
+    font-size: 14px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.ml-score-value {
+    font-size: 42px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ml-score-sub {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+/* =========================================
+SECTION PILLS
+========================================= */
+
+.section-pill {
+    border: 1.5px solid;
+    border-radius: 12px;
+    padding: 10px 14px;
+    text-align: center;
+    font-size: 14px;
+    color: white;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.04);
+}
+
+/* =========================================
+GAP PILLS
+========================================= */
+
+.gap-pill {
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 12px;
+    padding: 10px 14px;
+    text-align: center;
+    font-size: 14px;
+    color: #fca5a5;
+    margin-bottom: 8px;
+}
+
+/* =========================================
+AI OUTPUT CARD
+========================================= */
+
+.ai-output-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-left: 4px solid #818cf8;
+    border-radius: 16px;
+    padding: 24px 28px;
+    color: #e2e8f0;
+    font-size: 15px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    margin-top: 12px;
+}
