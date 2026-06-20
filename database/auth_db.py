@@ -1,24 +1,48 @@
+"""
+Auth Database — PBKDF2-HMAC-SHA256 password hashing,
+thread-safe per-call SQLite connections.
+"""
+
 import sqlite3
 import hashlib
 import os
+import contextlib
+from pathlib import Path
+
+DB_PATH = Path("users.db")
 
 # =========================================
-# DATABASE CONNECTION
+# CONNECTION FACTORY
 # =========================================
 
-conn = sqlite3.connect("users.db", check_same_thread=False)
-cursor = conn.cursor()
+@contextlib.contextmanager
+def get_conn():
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    try:
+        yield conn
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
 
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        id       INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        salt     TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-""")
-conn.commit()
+# =========================================
+# SCHEMA INIT
+# =========================================
+
+def init_db():
+    with get_conn() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                username   TEXT UNIQUE NOT NULL,
+                password   TEXT NOT NULL,
+                salt       TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
 
 # =========================================
 # PASSWORD HASHING
@@ -47,6 +71,8 @@ def validate_credentials(username: str, password: str):
         return False, "Username must be at least 3 characters."
     if len(username) > 30:
         return False, "Username must be under 30 characters."
+    if not all(c.isalnum() or c in "_-" for c in username):
+        return False, "Username can only contain letters, numbers, - and _."
     if not password:
         return False, "Password cannot be empty."
     if len(password) < 6:
@@ -63,14 +89,14 @@ def register_user(username: str, password: str):
         return False, msg
     try:
         hashed, salt = hash_password(password)
-        cursor.execute(
-            "INSERT INTO users (username, password, salt) VALUES (?, ?, ?)",
-            (username.strip(), hashed, salt)
-        )
-        conn.commit()
+        with get_conn() as conn:
+            conn.execute(
+                "INSERT INTO users (username, password, salt) VALUES (?, ?, ?)",
+                (username.strip(), hashed, salt)
+            )
         return True, "Account created successfully!"
     except sqlite3.IntegrityError:
-        return False, "Username already exists. Please choose another."
+        return False, "Username already taken. Please choose another."
     except Exception as e:
         return False, f"Registration failed: {str(e)}"
 
@@ -83,17 +109,40 @@ def login_user(username: str, password: str):
     if not valid:
         return False, msg
     try:
-        cursor.execute(
-            "SELECT password, salt FROM users WHERE username = ?",
-            (username.strip(),)
-        )
-        row = cursor.fetchone()
+        with get_conn() as conn:
+            row = conn.execute(
+                "SELECT password, salt FROM users WHERE username = ?",
+                (username.strip(),)
+            ).fetchone()
         if not row:
             return False, "Invalid username or password."
-        stored_hash, salt = row
-        hashed, _ = hash_password(password, salt)
-        if hashed == stored_hash:
+        hashed, _ = hash_password(password, row["salt"])
+        if hashed == row["password"]:
             return True, "Login successful!"
         return False, "Invalid username or password."
     except Exception as e:
         return False, f"Login failed: {str(e)}"
+
+# =========================================
+# CHANGE PASSWORD
+# =========================================
+
+def change_password(username: str, old_password: str, new_password: str):
+    ok, msg = login_user(username, old_password)
+    if not ok:
+        return False, "Current password is incorrect."
+    if len(new_password) < 6:
+        return False, "New password must be at least 6 characters."
+    try:
+        hashed, salt = hash_password(new_password)
+        with get_conn() as conn:
+            conn.execute(
+                "UPDATE users SET password=?, salt=? WHERE username=?",
+                (hashed, salt, username)
+            )
+        return True, "Password updated successfully."
+    except Exception as e:
+        return False, f"Failed to update password: {str(e)}"
+
+# Run schema init on import
+init_db()
