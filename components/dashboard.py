@@ -1,342 +1,145 @@
+"""
+Analytics Dashboard — ATS metrics, skill charts, and resume insights.
+"""
+
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
+from utils.skill_engine import score_label
 
-# =========================================
-# SHOW DASHBOARD
-# =========================================
 
-def show_dashboard(
+def _metric_card(label: str, value: str, subtitle: str, color: str):
+    st.markdown(f"""
+    <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+                backdrop-filter:blur(14px);border-radius:20px;padding:28px 24px;
+                text-align:center;border-top:3px solid {color}">
+        <div style="font-size:12px;color:#94a3b8;text-transform:uppercase;
+                    letter-spacing:1.5px;margin-bottom:10px">{label}</div>
+        <div style="font-size:42px;font-weight:800;color:{color}">{value}</div>
+        <div style="font-size:12px;color:#64748b;margin-top:6px">{subtitle}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    text,
 
-    detected_skills,
+def show_dashboard(text, detected_skills, ats_score, job_match_score,
+                   strength_score, skill_bonus, resume_category, required_skills):
 
-    ats_score,
+    st.markdown("<h2 style='color:white;margin-bottom:4px'>📊 Resume Analytics</h2>",
+                unsafe_allow_html=True)
+    st.markdown(f"<p style='color:#94a3b8;margin-bottom:24px'>"
+                f"Detected category: <b style='color:#c084fc'>{resume_category}</b></p>",
+                unsafe_allow_html=True)
 
-    job_match_score,
+    # ── Hero metrics ─────────────────────────────────────────
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        _metric_card("ATS Score", f"{ats_score:.1f}%",
+                     score_label(ats_score), "#38bdf8")
+    with c2:
+        _metric_card("Job Match", f"{job_match_score:.1f}%",
+                     score_label(job_match_score), "#818cf8")
+    with c3:
+        _metric_card("Strength", f"{strength_score}%",
+                     score_label(strength_score), "#c084fc")
 
-    strength_score,
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    skill_bonus,
-
-    resume_category,
-
-    required_skills
-):
-
-    # =====================================
-    # TITLE
-    # =====================================
-
-    st.subheader(
-        "📊 Resume Analytics Dashboard"
+    # ── Skills ───────────────────────────────────────────────
+    tab_skills, tab_charts, tab_text = st.tabs(
+        ["🛠 Skills", "📈 Charts", "📄 Resume Text"]
     )
 
-    # =====================================
-    # HERO METRICS
-    # =====================================
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-
-        st.metric(
-
-            "ATS Score",
-
-            f"{ats_score:.2f}%"
-        )
-
-    with col2:
-
-        st.metric(
-
-            "Job Match",
-
-            f"{job_match_score:.2f}%"
-        )
-
-    with col3:
-
-        st.metric(
-
-            "Resume Strength",
-
-            f"{strength_score}%"
-        )
-
-    # =====================================
-    # CATEGORY
-    # =====================================
-
-    st.markdown("---")
-
-    st.subheader(
-        "🎯 Resume Category"
-    )
-
-    st.success(resume_category)
-
-    # =====================================
-    # DETECTED SKILLS
-    # =====================================
-
-    st.markdown("---")
-
-    st.subheader(
-        "🛠 Detected Skills"
-    )
-
-    for skill in detected_skills:
-
-        st.success(skill)
-
-    # =====================================
-    # MISSING SKILLS
-    # =====================================
-
-    missing_skills = []
-
-    for skill in required_skills:
-
-        if skill not in detected_skills:
-
-            missing_skills.append(skill)
-
-    st.markdown("---")
-
-    st.subheader(
-        "❌ Missing Skills"
-    )
-
-    if len(missing_skills) > 0:
-
-        for skill in missing_skills:
-
-            st.warning(skill)
-
-    else:
-
-        st.success(
-            "No important skills missing."
-        )
-
-    # =====================================
-    # EXTRACTED TEXT
-    # =====================================
-
-    st.markdown("---")
-
-    with st.expander(
-        "View Extracted Resume Text"
-    ):
-
-        st.write(text)
-
-    # =====================================
-    # ANALYTICS DASHBOARD
-    # =====================================
-
-    st.markdown("---")
-
-    st.subheader(
-        "📈 Analytics Dashboard"
-    )
-
-    # =====================================
-    # PIE CHART
-    # =====================================
-
-    skill_data = {
-
-        "Skill": detected_skills,
-
-        "Count": [1] * len(detected_skills)
-    }
-
-    fig1 = px.pie(
-
-        skill_data,
-
-        names="Skill",
-
-        values="Count",
-
-        title="Detected Skills Distribution",
-
-        template="plotly_dark"
-    )
-
-    fig1.update_layout(
-
-        paper_bgcolor="rgba(0,0,0,0)",
-
-        plot_bgcolor="rgba(0,0,0,0)",
-
-        font_color="white",
-
-        height=450
-    )
-
-    # =====================================
-    # ATS CHART
-    # =====================================
-
-    ats_data = {
-
-        "Category": ["ATS Score"],
-
-        "Score": [ats_score]
-    }
-
-    fig2 = px.bar(
-
-        ats_data,
-
-        x="Category",
-
-        y="Score",
-
-        text="Score",
-
-        title="ATS Score Analysis",
-
-        template="plotly_dark"
-    )
-
-    fig2.update_layout(
-
-        paper_bgcolor="rgba(0,0,0,0)",
-
-        plot_bgcolor="rgba(0,0,0,0)",
-
-        font_color="white",
-
-        height=450
-    )
-
-    # =====================================
-    # CHART COLUMNS
-    # =====================================
-
-    col_chart1, col_chart2 = st.columns(2)
-
-    with col_chart1:
-
-        st.plotly_chart(
-
-            fig1,
-
-            use_container_width=True
-        )
-
-    with col_chart2:
-
-        st.plotly_chart(
-
-            fig2,
-
-            use_container_width=True
-        )
-
-    # =====================================
-    # JOB MATCH CHART
-    # =====================================
-
-    job_data = {
-
-        "Category": ["Job Match"],
-
-        "Score": [job_match_score]
-    }
-
-    fig3 = px.bar(
-
-        job_data,
-
-        x="Category",
-
-        y="Score",
-
-        text="Score",
-
-        title="Resume vs Job Match",
-
-        template="plotly_dark"
-    )
-
-    fig3.update_layout(
-
-        paper_bgcolor="rgba(0,0,0,0)",
-
-        plot_bgcolor="rgba(0,0,0,0)",
-
-        font_color="white",
-
-        height=450
-    )
-
-    st.plotly_chart(
-
-        fig3,
-
-        use_container_width=True
-    )
-
-    # =====================================
-    # RESUME STRENGTH CHART
-    # =====================================
-
-    strength_data = {
-
-        "Metric": [
-
-            "ATS Score",
-
-            "Job Match",
-
-            "Skill Bonus"
-        ],
-
-        "Value": [
-
+    with tab_skills:
+        missing_skills = [s for s in required_skills if s not in detected_skills]
+
+        col_det, col_mis = st.columns(2)
+        with col_det:
+            st.markdown("<h4 style='color:#22c55e'>✅ Detected Skills</h4>",
+                        unsafe_allow_html=True)
+            if detected_skills:
+                # Render as pill badges
+                pills = " ".join(
+                    f"<span style='display:inline-block;background:rgba(34,197,94,0.12);"
+                    f"border:1px solid rgba(34,197,94,0.3);border-radius:20px;"
+                    f"padding:5px 14px;margin:4px;font-size:13px;color:#86efac'>{s}</span>"
+                    for s in sorted(detected_skills)
+                )
+                st.markdown(f"<div style='line-height:2.2'>{pills}</div>",
+                            unsafe_allow_html=True)
+            else:
+                st.caption("No skills detected.")
+
+        with col_mis:
+            st.markdown("<h4 style='color:#f87171'>❌ Missing Required Skills</h4>",
+                        unsafe_allow_html=True)
+            if missing_skills:
+                pills = " ".join(
+                    f"<span style='display:inline-block;background:rgba(239,68,68,0.10);"
+                    f"border:1px solid rgba(239,68,68,0.3);border-radius:20px;"
+                    f"padding:5px 14px;margin:4px;font-size:13px;color:#fca5a5'>{s}</span>"
+                    for s in sorted(missing_skills)
+                )
+                st.markdown(f"<div style='line-height:2.2'>{pills}</div>",
+                            unsafe_allow_html=True)
+            else:
+                st.success("All required skills found! 🎉")
+
+    with tab_charts:
+        # Radar / spider chart for score dimensions
+        categories = ["ATS Score", "Job Match", "Strength",
+                       "Skill Count (×5)", "Section Bonus"]
+        values = [
             ats_score,
-
             job_match_score,
-
-            skill_bonus
+            strength_score,
+            min(len(detected_skills) * 5, 100),
+            skill_bonus * 5,
         ]
-    }
+        fig_radar = go.Figure(go.Scatterpolar(
+            r=values + [values[0]],
+            theta=categories + [categories[0]],
+            fill='toself',
+            line=dict(color='#818cf8', width=2),
+            fillcolor='rgba(129,140,248,0.15)'
+        ))
+        fig_radar.update_layout(
+            polar=dict(
+                bgcolor='rgba(0,0,0,0)',
+                radialaxis=dict(visible=True, range=[0, 100],
+                                gridcolor='rgba(255,255,255,0.08)',
+                                color='#64748b'),
+                angularaxis=dict(gridcolor='rgba(255,255,255,0.08)',
+                                  color='#94a3b8')
+            ),
+            paper_bgcolor='rgba(0,0,0,0)',
+            font_color='white',
+            height=380,
+            margin=dict(t=30, b=30),
+            showlegend=False,
+            title=dict(text="Resume Score Radar", font=dict(color='white', size=14))
+        )
+        st.plotly_chart(fig_radar, use_container_width=True)
 
-    fig4 = px.bar(
+        # Bar — skills distribution
+        if detected_skills:
+            fig_pie = px.pie(
+                names=detected_skills,
+                values=[1] * len(detected_skills),
+                title="Detected Skills Distribution",
+                template="plotly_dark",
+                color_discrete_sequence=px.colors.sequential.Plasma
+            )
+            fig_pie.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                font_color="white",
+                height=400,
+                legend=dict(font=dict(size=11))
+            )
+            st.plotly_chart(fig_pie, use_container_width=True)
 
-        strength_data,
-
-        x="Metric",
-
-        y="Value",
-
-        text="Value",
-
-        title="Resume Strength Analysis",
-
-        template="plotly_dark"
-    )
-
-    fig4.update_layout(
-
-        paper_bgcolor="rgba(0,0,0,0)",
-
-        plot_bgcolor="rgba(0,0,0,0)",
-
-        font_color="white",
-
-        height=450
-    )
-
-    st.plotly_chart(
-
-        fig4,
-
-        use_container_width=True
-    )
+    with tab_text:
+        st.markdown("<p style='color:#94a3b8;font-size:13px'>"
+                    "Raw text extracted from your PDF.</p>",
+                    unsafe_allow_html=True)
+        st.text_area("Extracted Resume Text", value=text, height=400,
+                     disabled=True, label_visibility="collapsed")
