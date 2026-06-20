@@ -1,69 +1,65 @@
+"""
+Auth UI — Login and Sign Up with clean error states.
+"""
+
 import streamlit as st
 from database.auth_db import register_user, login_user
 
-# =========================================
-# AUTH UI
-# =========================================
 
 def show_auth_ui():
 
-    st.markdown(
-        """
-        <div class="auth-wrapper">
-            <div class="auth-main-title">Access Your AI Dashboard</div>
-            <div class="auth-subtitle">
-                Login or create an account to unlock AI-powered resume intelligence.
-            </div>
+    st.markdown("""
+    <div class="auth-wrapper">
+        <div class="auth-main-title">Access Your Dashboard</div>
+        <div class="auth-subtitle">
+            Log in or create a free account to unlock AI-powered resume analysis.
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """, unsafe_allow_html=True)
 
-    left_col, center_col, right_col = st.columns([1, 2, 1])
+    _, center, _ = st.columns([1, 2, 1])
 
-    with center_col:
+    with center:
+        login_tab, signup_tab = st.tabs(["🔐 Log In", "📝 Sign Up"])
 
-        auth_tab1, auth_tab2 = st.tabs(["🔐 Login", "📝 Sign Up"])
-
-        # =================================
-        # LOGIN
-        # =================================
-        with auth_tab1:
-            st.markdown("<h2 class='auth-title'>Welcome Back</h2>", unsafe_allow_html=True)
-
-            username = st.text_input("Username", key="login_username", placeholder="Enter your username")
-            password = st.text_input("Password", type="password", key="login_password", placeholder="Enter your password")
-
-            if st.button("🔐 Login", use_container_width=True, key="btn_login"):
+        # ── Login ─────────────────────────────────────────────
+        with login_tab:
+            st.markdown("<h3 class='auth-title'>Welcome back</h3>",
+                        unsafe_allow_html=True)
+            username = st.text_input("Username", key="li_user",
+                                      placeholder="Your username")
+            password = st.text_input("Password", type="password",
+                                      key="li_pass", placeholder="Your password")
+            if st.button("Log In →", use_container_width=True, key="btn_login"):
                 if not username.strip() or not password.strip():
                     st.error("Please fill in both fields.")
                 else:
-                    success, msg = login_user(username, password)
-                    if success:
+                    ok, msg = login_user(username, password)
+                    if ok:
                         st.session_state.logged_in = True
                         st.session_state.username = username.strip()
                         st.rerun()
                     else:
                         st.error(msg)
 
-        # =================================
-        # SIGNUP
-        # =================================
-        with auth_tab2:
-            st.markdown("<h2 class='auth-title'>Create Account</h2>", unsafe_allow_html=True)
-
-            new_username = st.text_input("Username", key="signup_username", placeholder="Min 3 characters")
-            new_password = st.text_input("Password", type="password", key="signup_password", placeholder="Min 6 characters")
-            confirm_password = st.text_input("Confirm Password", type="password", key="signup_confirm", placeholder="Repeat password")
-
-            if st.button("🚀 Create Account", use_container_width=True, key="btn_signup"):
-                if not new_username.strip() or not new_password.strip():
+        # ── Sign up ───────────────────────────────────────────
+        with signup_tab:
+            st.markdown("<h3 class='auth-title'>Create account</h3>",
+                        unsafe_allow_html=True)
+            new_user = st.text_input("Username", key="su_user",
+                                      placeholder="Min 3 characters, letters/numbers/-/_")
+            new_pass = st.text_input("Password", type="password",
+                                      key="su_pass", placeholder="Min 6 characters")
+            confirm  = st.text_input("Confirm Password", type="password",
+                                      key="su_conf", placeholder="Repeat password")
+            if st.button("Create Account →", use_container_width=True, key="btn_signup"):
+                if not new_user.strip() or not new_pass.strip():
                     st.error("Please fill in all fields.")
-                elif new_password != confirm_password:
+                elif new_pass != confirm:
                     st.error("Passwords do not match.")
                 else:
-                    success, msg = register_user(new_username, new_password)
-                    if success:
-                        st.success(msg + " Please login.")
+                    ok, msg = register_user(new_user, new_pass)
+                    if ok:
+                        st.success(msg + " You can now log in.")
                     else:
                         st.error(msg)
