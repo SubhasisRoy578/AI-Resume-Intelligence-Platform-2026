@@ -246,7 +246,7 @@ st.markdown(
     <center style='color:#475569;font-size:13px;padding:10px 0'>
         🚀 AI Resume Intelligence Platform &nbsp;·&nbsp;
         Built with Python · Streamlit · Groq AI · scikit-learn · TF-IDF · SQLite
-        <br><br>Developed by Jahnavi
+        <br><br>Developed by Subhasis Roy
     </center>
     """,
     unsafe_allow_html=True
