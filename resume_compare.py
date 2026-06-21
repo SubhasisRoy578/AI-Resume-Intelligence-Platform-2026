@@ -32,31 +32,38 @@ REQUIRED_SKILLS = ["Python", "SQL", "Machine Learning", "Git", "React", "JavaScr
 
 
 def _score_card(label: str, val_a: float, val_b: float, color: str):
-    delta = val_b - val_a
-    arrow = "▲" if delta > 0 else ("▼" if delta < 0 else "●")
-    delta_color = "#22c55e" if delta > 0 else ("#ef4444" if delta < 0 else "#94a3b8")
-
-    st.markdown(f"""
-    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
-                border-radius:16px;padding:20px;text-align:center;margin-bottom:12px">
-        <div style="font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;
-                    margin-bottom:8px">{label}</div>
-        <div style="display:flex;justify-content:space-around;align-items:center">
-            <div>
-                <div style="font-size:28px;font-weight:800;color:#64748b">{val_a:.1f}%</div>
-                <div style="font-size:11px;color:#475569">Version A</div>
+    """Display comparison score card with before/after values"""
+    st.markdown(
+        f"""
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+                    border-radius:12px;padding:20px;margin:10px 0;backdrop-filter:blur(10px);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <span style="color:#94a3b8;font-size:14px;font-weight:500;">{label}</span>
+                <span style="color:#64748b;font-size:12px;">⬆ Improvement</span>
             </div>
-            <div style="font-size:22px;color:{delta_color};font-weight:700">
-                {arrow} {abs(delta):.1f}
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <div style="font-size:12px;color:#64748b;margin-bottom:4px;">Version A</div>
+                    <div style="font-size:24px;font-weight:700;color:#94a3b8;">{val_a:.1f}%</div>
+                </div>
+                <div style="text-align:center;flex:1;">
+                    <div style="font-size:28px;font-weight:800;color:{color};">{val_b:.1f}%</div>
+                    <div style="font-size:12px;color:#38bdf8;">Version B</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:12px;color:#64748b;margin-bottom:4px;">Gain</div>
+                    <div style="font-size:20px;font-weight:700;color:#4ade80;">
+                        +{((val_b - val_a) / val_a * 100) if val_a > 0 else 0:.1f}%
+                    </div>
+                </div>
             </div>
-            <div>
-                <div style="font-size:28px;font-weight:800;color:{color}">{val_b:.1f}%</div>
-                <div style="font-size:11px;color:#94a3b8">Version B</div>
+            <div style="margin-top:12px;background:rgba(255,255,255,0.05);border-radius:6px;height:6px;overflow:hidden;">
+                <div style="background:linear-gradient(90deg, {color}, #38bdf8);height:100%;width:{min(val_b, 100)}%;transition:width 0.5s;"></div>
             </div>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
-
+        """,
+        unsafe_allow_html=True
+    )
 
 def show_resume_compare(job_description: str = ""):
     st.markdown("<h2 style='color:white'>⚖️ Resume Version Comparator</h2>",
