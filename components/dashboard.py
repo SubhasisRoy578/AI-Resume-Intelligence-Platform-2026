@@ -136,4 +136,22 @@ def show_dashboard(text, detected_skills, ats_score, job_match_score,
                 labels={'x': 'Skills', 'y': 'Presence'}
             )
             fig_bar.update_layout(
-                paper_bgcolor
+                paper_bgcolor="rgba(0,0,0,0)",
+                font_color="white",
+                height=350,
+                showlegend=False,
+                plot_bgcolor="rgba(0,0,0,0)",
+                title_font=dict(size=16, weight=700)
+            )
+            fig_bar.update_xaxis(gridcolor='rgba(255,255,255,0.05)')
+            fig_bar.update_yaxis(gridcolor='rgba(255,255,255,0.05)')
+            st.plotly_chart(fig_bar, use_container_width=True)
+
+    with tab_text:
+        st.markdown("""
+            <p style='color:var(--gray-400);font-size:13px;margin-bottom:12px;'>
+                📄 Raw text extracted from your PDF.
+            </p>
+        """, unsafe_allow_html=True)
+        st.text_area("Extracted Resume Text", value=text, height=400,
+                     disabled=True, label_visibility="collapsed")
