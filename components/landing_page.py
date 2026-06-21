@@ -1,105 +1,50 @@
+# components/landing_page.py
 """
-Landing Page — modern hero section with live stats from DB.
+Landing Page — High-conversion UI with clean typography and modern call-to-actions.
 """
-
 import streamlit as st
-from database.db import get_global_stats
-
 
 def show_landing_page():
-
-    stats = get_global_stats()
-
-    # ── Navbar ────────────────────────────────────────────────
+    # Hero Section
     st.markdown("""
-    <div class="navbar animate-fade-in">
-        <div class="nav-logo">⚡ ResumeIQ</div>
-        <div class="nav-links">
-            <span>Features</span>
-            <span>ML Analysis</span>
-            <span>AI Tools</span>
-            <span>Compare</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ── Hero ─────────────────────────────────────────────────
-    st.markdown(f"""
-    <div class="hero-section">
-        <div class="hero-badge">
-            ✦ AI + ML Powered Resume Intelligence
-        </div>
-        <h1 class="hero-title">
-            Know <em>exactly</em> why<br>
-            <span class="gradient-text">your resume works</span>
+    <div style="text-align: center; padding: 60px 20px;">
+        <h1 style="font-size: 56px; margin-bottom: 20px;">
+            Land Your Dream Job with <span class="gradient-text">AI Intelligence</span>
         </h1>
-        <p class="hero-subtitle">
-            Upload your resume and get ATS scoring, TF-IDF semantic job matching,
-            skill gap analysis, AI-generated cover letters, interview prep,
-            and a side-by-side version comparator — all in one platform.
+        <p style="font-size: 20px; color: var(--text-muted); max-width: 700px; margin: 0 auto 40px;">
+            Stop guessing why your resume isn't getting attention. 
+            Get real-time feedback, skill gap analysis, and personalized career roadmaps.
         </p>
+        <div style="display: flex; gap: 16px; justify-content: center;">
+            <button style="background: var(--accent-blue); border: none; padding: 12px 32px; 
+            border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">
+                Get Started Free →
+            </button>
+            <button style="background: transparent; border: 1px solid var(--text-muted); padding: 12px 32px; 
+            border-radius: 8px; color: white; cursor: pointer;">
+                View Demo
+            </button>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Stats ─────────────────────────────────────────────────
-    c1, c2, c3, c4 = st.columns(4)
+    # Feature Grid
+    st.markdown("<h2 style='text-align: center; margin-bottom: 40px;'>Everything You Need</h2>", unsafe_allow_html=True)
+    
+    cols = st.columns(3)
+    features = [
+        ("⚡ Real-time ATS Analysis", "Get instant feedback on your resume keywords and formatting."),
+        ("🎯 Skill Gap Detection", "Identify exactly what skills you're missing for specific roles."),
+        ("🛣 Career Roadmaps", "Follow curated paths to upskill and land your next role faster.")
+    ]
 
-    def _stat(col, num, label, color="#38bdf8", icon="📊"):
-        with col:
+    for i, (title, desc) in enumerate(features):
+        with cols[i]:
             st.markdown(f"""
-            <div class="stats-card animate-fade-up">
-                <div style="font-size:28px;margin-bottom:8px;">{icon}</div>
-                <h2 style="color:{color}">{num}</h2>
-                <p>{label}</p>
+            <div class="card-glass" style="height: 200px;">
+                <h3 style="margin-top: 0;">{title}</h3>
+                <p style="color: var(--text-muted);">{desc}</p>
             </div>
             """, unsafe_allow_html=True)
 
-    _stat(c1, f"{max(stats['total'], 0):,}",
-          "Resumes Analysed", "#38bdf8", "📄")
-    _stat(c2, f"{max(stats['avg_ats'], 0):.0f}%",
-          "Avg ATS Score",    "#818cf8", "🎯")
-    _stat(c3, f"{max(stats['users'], 0):,}",
-          "Active Users",     "#c084fc", "👥")
-    _stat(c4, "6",
-          "Analysis Dimensions", "#34d399", "🧠")
-
-    # ── Feature cards ─────────────────────────────────────────
-    st.markdown("<h2 class='section-title'>Everything you need to get hired</h2>",
-                unsafe_allow_html=True)
-
-    features = [
-        ("📊", "ATS Scoring",
-         "Rule-based ATS score matching your resume to the required skills for any role."),
-        ("🧠", "ML Job Match",
-         "TF-IDF vectorization + cosine similarity for real semantic resume-to-JD matching."),
-        ("🔍", "Skill Gap Finder",
-         "NLP-based detection of skills the JD needs that your resume is missing."),
-        ("🤖", "AI Writing Tools",
-         "Groq-powered resume summary, feedback, cover letter, and interview Q generation."),
-        ("⚖️", "Version Comparator",
-         "Upload two versions of your resume and see exactly which changes moved the needle."),
-        ("🛣", "Career Roadmap",
-         "Personalised career path and milestone roadmap based on your detected skill set."),
-    ]
-
-    for i in range(0, len(features), 3):
-        cols = st.columns(3)
-        for col, (icon, title, desc) in zip(cols, features[i:i+3]):
-            with col:
-                st.markdown(f"""
-                <div class="feature-card animate-fade-up">
-                    <span class="feature-icon">{icon}</span>
-                    <h3>{title}</h3>
-                    <p>{desc}</p>
-                </div>
-                """, unsafe_allow_html=True)
-
     st.markdown("<br><br>", unsafe_allow_html=True)
-
-    # ── CTA ───────────────────────────────────────────────────
-    st.markdown("""
-    <div class="cta-section animate-fade-up">
-        <h2>Ready to optimise your resume?</h2>
-        <p>Sign up below — it's free. Get your first analysis in under 60 seconds.</p>
-    </div>
-    """, unsafe_allow_html=True)
