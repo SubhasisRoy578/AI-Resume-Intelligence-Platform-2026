@@ -80,3 +80,36 @@ def show_recommendations(detected_skills: list, ats_score: float, strength_score
         """, unsafe_allow_html=True)
 
     with tab_projects:
+        st.markdown("<h4 style='color: white; margin-bottom: 15px;'>High-Yield Portfolio Additions</h4>", unsafe_allow_html=True)
+        
+        col_p1, col_p2 = st.columns(2)
+        
+        with col_p1:
+            st.markdown("""
+            <div class="card-glass" style="height: 100%;">
+                <div style="font-size: 12px; color: var(--accent-green); font-weight: 600; margin-bottom: 5px;">🔥 Recommended Project</div>
+                <h3 style="margin: 0 0 10px 0; font-size: 18px;">Enterprise Microservices Mesh</h3>
+                <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin: 0 0 15px 0;">
+                    Construct an asymmetric REST backend with horizontal scaling capabilities utilizing FastAPI, Docker instances, and Redis cluster locks.
+                </p>
+                <div style="font-size: 12px; color: var(--text-muted);">
+                    <strong>Target Skills:</strong> FastAPI • Redis • Infrastructure Routing
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        with col_p2:
+            st.markdown("""
+            <div class="card-glass" style="height: 100%;">
+                <div style="font-size: 12px; color: var(--accent-blue); font-weight: 600; margin-bottom: 5px;">⚡ Performance Booster</div>
+                <h3 style="margin: 0 0 10px 0; font-size: 18px;">Distributed Analytics Pipeline</h3>
+                <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin: 0 0 15px 0;">
+                    Design and deliver an asynchronous logging broker infrastructure handling telemetry ingestion patterns streaming down to a structured relational schema.
+                </p>
+                <div style="font-size: 12px; color: var(--text-muted);">
+                    <strong>Target Skills:</strong> PostgreSQL • Query Optimization • Git Lifecycle
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
