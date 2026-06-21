@@ -1,176 +1,80 @@
+# components/dashboard.py
 """
-Analytics Dashboard — ATS metrics, skill charts, and resume insights.
+Dashboard — High-level analytics with a focus on UX and clean visuals.
 """
-
 import streamlit as st
 import plotly.express as px
-import plotly.graph_objects as go
-from utils.skill_engine import score_label
+import pandas as pd
 
+def show_dashboard():
+    st.markdown("<h1 class='gradient-text'>⚡ Performance Dashboard</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color:var(--text-muted)'>Track your ATS optimization progress and skill development metrics.</p>", unsafe_allow_html=True)
 
-def _metric_card(label: str, value: str, subtitle: str, color: str, icon: str = ""):
-    """Professional metric card with icon and gradient border"""
-    st.markdown(f"""
-    <div class="metric-card animate-fade-up">
-        <div style="font-size:24px;margin-bottom:8px;">{icon}</div>
-        <div class="metric-label">{label}</div>
-        <div class="metric-value" style="color:{color}">{value}</div>
-        <div class="metric-sub">{subtitle}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-
-def show_dashboard(text, detected_skills, ats_score, job_match_score,
-                   strength_score, skill_bonus, resume_category, required_skills):
-
-    st.markdown("<h2 style='color:white;margin-bottom:4px;font-weight:800;'>📊 Resume Analytics</h2>",
-                unsafe_allow_html=True)
-    st.markdown(f"""
-        <p style='color:var(--gray-400);margin-bottom:24px;font-size:16px;'>
-            Detected category: <span style='color:var(--purple-400);font-weight:600;'>{resume_category}</span>
-            · {len(detected_skills)} skills found
-        </p>
-    """, unsafe_allow_html=True)
-
-    # ── Hero metrics ─────────────────────────────────────────
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        _metric_card("ATS Score", f"{ats_score:.1f}%",
-                     score_label(ats_score), "#38bdf8", "🎯")
-    with c2:
-        _metric_card("Job Match", f"{job_match_score:.1f}%",
-                     score_label(job_match_score), "#818cf8", "📊")
-    with c3:
-        _metric_card("Strength", f"{strength_score:.1f}%",
-                     score_label(strength_score), "#c084fc", "💪")
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ── Skills ───────────────────────────────────────────────
-    tab_skills, tab_charts, tab_text = st.tabs(
-        ["🛠 Skills", "📈 Charts", "📄 Resume Text"]
-    )
-
-    with tab_skills:
-        missing_skills = [s for s in required_skills if s not in detected_skills]
-
-        col_det, col_mis = st.columns(2)
-        with col_det:
-            st.markdown("<h4 style='color:#22c55e;font-weight:700;'>✅ Detected Skills</h4>",
-                        unsafe_allow_html=True)
-            if detected_skills:
-                pills = " ".join(
-                    f"<span class='skill-pill'>{s}</span>"
-                    for s in sorted(detected_skills)
-                )
-                st.markdown(f"<div style='line-height:2.4'>{pills}</div>",
-                            unsafe_allow_html=True)
-            else:
-                st.caption("No skills detected.")
-
-        with col_mis:
-            st.markdown("<h4 style='color:#f87171;font-weight:700;'>❌ Missing Required Skills</h4>",
-                        unsafe_allow_html=True)
-            if missing_skills:
-                pills = " ".join(
-                    f"<span class='skill-pill-missing'>{s}</span>"
-                    for s in sorted(missing_skills)
-                )
-                st.markdown(f"<div style='line-height:2.4'>{pills}</div>",
-                            unsafe_allow_html=True)
-            else:
-                st.markdown("""
-                    <div style='background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);
-                                border-radius:12px;padding:16px;text-align:center;'>
-                        <span style='color:#22c55e;font-size:18px;'>🎉 All required skills found!</span>
-                    </div>
-                """, unsafe_allow_html=True)
-
-    with tab_charts:
-        # Radar chart
-        categories = ["ATS Score", "Job Match", "Strength",
-                       "Skill Count (×5)", "Section Bonus"]
-        values = [
-            ats_score,
-            job_match_score,
-            strength_score,
-            min(len(detected_skills) * 5, 100),
-            skill_bonus * 5,
-        ]
-        
-        fig_radar = go.Figure(go.Scatterpolar(
-            r=values + [values[0]],
-            theta=categories + [categories[0]],
-            fill='toself',
-            line=dict(color='#818cf8', width=2),
-            fillcolor='rgba(129,140,248,0.15)'
-        ))
-        fig_radar.update_layout(
-            polar=dict(
-                bgcolor='rgba(0,0,0,0)',
-                radialaxis=dict(visible=True, range=[0, 100],
-                                gridcolor='rgba(255,255,255,0.08)',
-                                color='#64748b'),
-                angularaxis=dict(gridcolor='rgba(255,255,255,0.08)',
-                                  color='#94a3b8')
-            ),
-            paper_bgcolor='rgba(0,0,0,0)',
-            font_color='white',
-            height=400,
-            margin=dict(t=30, b=30),
-            showlegend=False,
-            title=dict(text="Resume Score Radar", font=dict(color='white', size=16, weight=700))
-        )
-        st.plotly_chart(fig_radar, use_container_width=True)
-
-        # Bar chart - skills distribution (FIXED)
-        if detected_skills:
-            # Create a simple bar chart with skill counts
-            skill_data = {s: 1 for s in detected_skills[:12]}
-            
-            fig_bar = px.bar(
-                x=list(skill_data.keys()),
-                y=list(skill_data.values()),
-                title="Skills Distribution",
-                labels={'x': 'Skills', 'y': 'Presence'},
-                color_discrete_sequence=["#818cf8"]
-            )
-            
-            fig_bar.update_layout(
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font_color="white",
-                height=350,
-                showlegend=False,
-                title_font=dict(size=16, weight=700),
-                xaxis=dict(
-                    gridcolor='rgba(255,255,255,0.05)',
-                    tickangle=45
-                ),
-                yaxis=dict(
-                    gridcolor='rgba(255,255,255,0.05)',
-                    range=[0, 1.5]
-                )
-            )
-            
-            # ✅ FIXED: Use update_traces instead of update_xaxis
-            fig_bar.update_traces(
-                marker=dict(
-                    color='#818cf8',
-                    line=dict(color='#6366f1', width=1)
-                ),
-                width=0.6
-            )
-            
-            st.plotly_chart(fig_bar, use_container_width=True)
-        else:
-            st.info("No skills detected to display in chart.")
-
-    with tab_text:
+    # ── Metric Cards (Grid Layout) ───────────────────────────
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
         st.markdown("""
-            <p style='color:var(--gray-400);font-size:13px;margin-bottom:12px;'>
-                📄 Raw text extracted from your PDF.
-            </p>
+        <div class="card-glass">
+            <div style="font-size: 14px; color: var(--text-muted)">Overall Score</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--accent-blue)">84%</div>
+        </div>
         """, unsafe_allow_html=True)
-        st.text_area("Extracted Resume Text", value=text, height=400,
-                     disabled=True, label_visibility="collapsed")
+    with col2:
+        st.markdown("""
+        <div class="card-glass">
+            <div style="font-size: 14px; color: var(--text-muted)">ATS Match</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--accent-purple)">78%</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col3:
+        st.markdown("""
+        <div class="card-glass">
+            <div style="font-size: 14px; color: var(--text-muted)">Skill Gap</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--accent-green)">12%</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col4:
+        st.markdown("""
+        <div class="card-glass">
+            <div style="font-size: 14px; color: var(--text-muted)">Projects</div>
+            <div style="font-size: 32px; font-weight: 800; color: white">05</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("##") # Spacing
+
+    # ── Charts & Skills ──────────────────────────────────────
+    c_left, c_right = st.columns([2, 1])
+
+    with c_left:
+        st.markdown("<div class='card-glass'>", unsafe_allow_html=True)
+        st.subheader("ATS Score Trend")
+        # Custom-themed Chart Logic
+        df = pd.DataFrame({'Date': ['Jan', 'Feb', 'Mar', 'Apr'], 'Score': [60, 68, 75, 84]})
+        fig = px.line(df, x='Date', y='Score', markers=True)
+        fig.update_layout(
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font_color='#94a3b8',
+            yaxis=dict(showgrid=False),
+            xaxis=dict(showgrid=False)
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with c_right:
+        st.markdown("<div class='card-glass'>", unsafe_allow_html=True)
+        st.subheader("Top Skills")
+        skills = ["Python", "AWS", "Docker", "SQL", "Machine Learning"]
+        for s in skills:
+            st.markdown(f"""
+                <div style="background:rgba(255,255,255,0.03); padding:8px 12px; 
+                border-radius:8px; margin-bottom:6px; border:1px solid rgba(255,255,255,0.05)">
+                {s}
+                </div>
+            """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# Placeholder for future visual components
+#
