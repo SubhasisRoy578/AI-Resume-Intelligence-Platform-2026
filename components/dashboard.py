@@ -123,29 +123,48 @@ def show_dashboard(text, detected_skills, ats_score, job_match_score,
         )
         st.plotly_chart(fig_radar, use_container_width=True)
 
-        # Bar chart - skills distribution
+        # Bar chart - skills distribution (FIXED)
         if detected_skills:
-            # Show top skills with values
-            skill_counts = {s: 1 for s in detected_skills[:12]}
+            # Create a simple bar chart with skill counts
+            skill_data = {s: 1 for s in detected_skills[:12]}
+            
             fig_bar = px.bar(
-                x=list(skill_counts.keys()),
-                y=list(skill_counts.values()),
+                x=list(skill_data.keys()),
+                y=list(skill_data.values()),
                 title="Skills Distribution",
-                template="plotly_dark",
-                color_discrete_sequence=["#818cf8"],
-                labels={'x': 'Skills', 'y': 'Presence'}
+                labels={'x': 'Skills', 'y': 'Presence'},
+                color_discrete_sequence=["#818cf8"]
             )
+            
             fig_bar.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
                 font_color="white",
                 height=350,
                 showlegend=False,
-                plot_bgcolor="rgba(0,0,0,0)",
-                title_font=dict(size=16, weight=700)
+                title_font=dict(size=16, weight=700),
+                xaxis=dict(
+                    gridcolor='rgba(255,255,255,0.05)',
+                    tickangle=45
+                ),
+                yaxis=dict(
+                    gridcolor='rgba(255,255,255,0.05)',
+                    range=[0, 1.5]
+                )
             )
-            fig_bar.update_xaxis(gridcolor='rgba(255,255,255,0.05)')
-            fig_bar.update_yaxis(gridcolor='rgba(255,255,255,0.05)')
+            
+            # ✅ FIXED: Use update_traces instead of update_xaxis
+            fig_bar.update_traces(
+                marker=dict(
+                    color='#818cf8',
+                    line=dict(color='#6366f1', width=1)
+                ),
+                width=0.6
+            )
+            
             st.plotly_chart(fig_bar, use_container_width=True)
+        else:
+            st.info("No skills detected to display in chart.")
 
     with tab_text:
         st.markdown("""
