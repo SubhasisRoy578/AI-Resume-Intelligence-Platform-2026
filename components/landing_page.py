@@ -12,7 +12,7 @@ def show_landing_page():
 
     # ── Navbar ────────────────────────────────────────────────
     st.markdown("""
-    <div class="navbar">
+    <div class="navbar animate-fade-in">
         <div class="nav-logo">⚡ ResumeIQ</div>
         <div class="nav-links">
             <span>Features</span>
@@ -26,10 +26,7 @@ def show_landing_page():
     # ── Hero ─────────────────────────────────────────────────
     st.markdown(f"""
     <div class="hero-section">
-        <div style="display:inline-block;background:rgba(129,140,248,0.12);
-                    border:1px solid rgba(129,140,248,0.3);border-radius:50px;
-                    padding:6px 20px;font-size:13px;color:#a5b4fc;
-                    letter-spacing:1px;text-transform:uppercase;margin-bottom:28px">
+        <div class="hero-badge">
             ✦ AI + ML Powered Resume Intelligence
         </div>
         <h1 class="hero-title">
@@ -47,23 +44,24 @@ def show_landing_page():
     # ── Stats ─────────────────────────────────────────────────
     c1, c2, c3, c4 = st.columns(4)
 
-    def _stat(col, num, label, color="#38bdf8"):
+    def _stat(col, num, label, color="#38bdf8", icon="📊"):
         with col:
             st.markdown(f"""
-            <div class="stats-card" style="border-top:2px solid {color}">
+            <div class="stats-card animate-fade-up">
+                <div style="font-size:28px;margin-bottom:8px;">{icon}</div>
                 <h2 style="color:{color}">{num}</h2>
                 <p>{label}</p>
             </div>
             """, unsafe_allow_html=True)
 
     _stat(c1, f"{max(stats['total'], 0):,}",
-          "Resumes Analysed", "#38bdf8")
+          "Resumes Analysed", "#38bdf8", "📄")
     _stat(c2, f"{max(stats['avg_ats'], 0):.0f}%",
-          "Avg ATS Score",    "#818cf8")
+          "Avg ATS Score",    "#818cf8", "🎯")
     _stat(c3, f"{max(stats['users'], 0):,}",
-          "Active Users",     "#c084fc")
+          "Active Users",     "#c084fc", "👥")
     _stat(c4, "6",
-          "Analysis Dimensions", "#34d399")
+          "Analysis Dimensions", "#34d399", "🧠")
 
     # ── Feature cards ─────────────────────────────────────────
     st.markdown("<h2 class='section-title'>Everything you need to get hired</h2>",
@@ -89,8 +87,8 @@ def show_landing_page():
         for col, (icon, title, desc) in zip(cols, features[i:i+3]):
             with col:
                 st.markdown(f"""
-                <div class="feature-card">
-                    <div class="feature-icon">{icon}</div>
+                <div class="feature-card animate-fade-up">
+                    <span class="feature-icon">{icon}</span>
                     <h3>{title}</h3>
                     <p>{desc}</p>
                 </div>
@@ -100,7 +98,7 @@ def show_landing_page():
 
     # ── CTA ───────────────────────────────────────────────────
     st.markdown("""
-    <div class="cta-section">
+    <div class="cta-section animate-fade-up">
         <h2>Ready to optimise your resume?</h2>
         <p>Sign up below — it's free. Get your first analysis in under 60 seconds.</p>
     </div>
